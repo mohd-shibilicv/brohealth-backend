@@ -5,8 +5,6 @@ services:
     runtime: python
     buildCommand: "./build.sh"
     startCommand: daphne -b 0.0.0.0 -p ${PORT} brohealth.asgi:application
-    envFile: .env
-    envVarFile: .env
     envVars:
       - key: DATABASE_URL
         fromDatabase:
