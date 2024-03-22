@@ -6,3 +6,4 @@ pip install -r requirements.txt
 python manage.py collectstatic --no-input
 python manage.py makemigrations
 python manage.py migrate
+python manage.py createsuperuser --noinput --username=admin --email=admin@admin.com --password=p09olp09olp
