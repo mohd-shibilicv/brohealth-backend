@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://brohealth-backend.onrender.com", "http://brohealth-backend.onrender.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -61,6 +61,15 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
+    "https://brohealth-backend.onrender.com",
+    "http://brohealth-backend.onrender.com",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://brohealth-backend.onrender.com",
+    "http://brohealth-backend.onrender.com",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:8000",
 ]
