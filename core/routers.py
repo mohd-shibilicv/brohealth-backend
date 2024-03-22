@@ -4,7 +4,7 @@ from accounts.views import UserModelViewSet
 from patients.views import PatientModelViewSet
 from doctors.views import DoctorModelViewSet
 from admins.views import AdminModelViewSet
-from core.viewsets import LoginViewSet, RegistrationViewSet, RefreshViewSet, VerifyAccountView
+from core.viewsets import LoginViewSet, RegistrationViewSet, RefreshViewSet
 from prescriptions.views import PrescriptionViewSet
 
 
