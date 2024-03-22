@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from rest_framework import permissions
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
 schema_view = get_schema_view(
@@ -37,6 +38,8 @@ urlpatterns = [
     re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
 ]
+
+urlpatterns += staticfiles_urlpatterns()
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if not settings.DEBUG:
