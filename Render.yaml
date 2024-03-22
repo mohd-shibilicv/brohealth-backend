@@ -1,14 +1,21 @@
 services:
   - type: web
-    env: python
-    buildCommand: |
-      pip install -r requirements.txt
-      python manage.py collectstatic --no-input
-      python manage.py makemigrations
-      python manage.py migrate
+    plan: free
+    name: brohealth-backend
+    runtime: python
+    buildCommand: "./build.sh"
     startCommand: daphne -b 0.0.0.0 -p ${PORT} brohealth.asgi:application
     envFile: .env
     envVarFile: .env
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: brohealth-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
     staticPublishPath: static
     staticConf:
       ROOT: staticfiles
@@ -16,10 +23,13 @@ services:
       instanceCount: 1
   - type: worker
     env: python
+    runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: celery -A your_project worker --beat --scheduler django --loglevel=info
+    startCommand: celery -A brohealth worker --beat --scheduler django --loglevel=info
     envFile: .env
     envVarFile: .env
 databases:
-  - type: postgresql
-    plan: starter
+  - name: brohealth-db
+    plan: free
+    databaseName: brohealth_db
+    user: brohealth_admin
