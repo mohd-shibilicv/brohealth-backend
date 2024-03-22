@@ -17,17 +17,11 @@ services:
       - key: WEB_CONCURRENCY
         value: 4
     staticPublishPath: static
-    staticConf:
-      ROOT: staticfiles
-    resources:
-      instanceCount: 1
   - type: worker
     env: python
     runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: celery -A brohealth worker --beat --scheduler django --loglevel=info
-    envFile: .env
-    envVarFile: .env
 databases:
   - name: brohealth-db
     plan: free
