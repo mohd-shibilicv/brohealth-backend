@@ -1,8 +1,11 @@
 services:
   - type: web
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: daphne -b 0.0.0.0 -p ${PORT} brohealth.asgi:application
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py makemigrations
+      python manage.py migrate
+    startCommand: daphne -b 0.0.0.0 -p ${PORT} your_project.asgi:application
     envFile: .env
     envVarFile: .env
     staticPublishPath: static
@@ -10,12 +13,7 @@ services:
       ROOT: staticfiles
     resources:
       instanceCount: 1
-  - type: worker
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: celery -A brohealth worker --beat --scheduler django --loglevel=info
-    envFile: .env
-    envVarFile: .env
+  # ... (other services like worker, etc.)
 databases:
   - type: postgresql
     plan: starter
