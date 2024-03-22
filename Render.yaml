@@ -13,7 +13,12 @@ services:
       ROOT: staticfiles
     resources:
       instanceCount: 1
-  # ... (other services like worker, etc.)
+  - type: worker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A your_project worker --beat --scheduler django --loglevel=info
+    envFile: .env
+    envVarFile: .env
 databases:
   - type: postgresql
     plan: starter
