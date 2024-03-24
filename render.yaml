@@ -6,14 +6,13 @@ databases:
 
 services:
   - name: brohealth-backend
-    env: python
+    env: python 
     type: web
     plan: free
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --no-input
       python manage.py migrate
-      python manage.py create_auto_adminuser --username=admin --email=admins@admins.com --password=p09olp09olp
     startCommand: |
       daphne -b 0.0.0.0 -p ${PORT} brohealth.asgi:application & celery -A brohealth worker --loglevel=info & celery -A brohealth beat --scheduler django --loglevel=info
     envVars:
