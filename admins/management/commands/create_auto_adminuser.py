@@ -1,6 +1,6 @@
 import os
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
@@ -22,9 +22,15 @@ class Command(BaseCommand):
             options["email"] = os.environ["DJANGO_SUPERUSER_EMAIL"]
             options["password"] = os.environ["DJANGO_SUPERUSER_PASSWORD"]
 
-        if not User.objects.filter(username=options["username"]).exists():
+        if not User.objects.filter(email=options["email"]).exists():
             User.objects.create_superuser(
-                username=options["username"],
+                first_name=options["username"],
                 email=options["email"],
                 password=options["password"],
+            )
+        else:
+            raise CommandError('Admin user already exists')
+
+        self.stdout.write(
+                self.style.SUCCESS('Successfully created the admin user')
             )
