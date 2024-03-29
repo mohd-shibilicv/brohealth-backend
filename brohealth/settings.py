@@ -1,22 +1,26 @@
 import os
-import dj_database_url
+import environ
 from pathlib import Path
-from dotenv import load_dotenv
 from datetime import timedelta
 from celery.schedules import crontab
 
-load_dotenv()
+env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(BASE_DIR / "brohealth" / ".env")
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG") == "True"
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["brohealth-backend.onrender.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -59,15 +63,6 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:8000",
-    "https://brohealth-backend.onrender.com",
-    "http://brohealth-backend.onrender.com",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:8000",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://brohealth-backend.onrender.com",
-    "http://brohealth-backend.onrender.com",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:8000",
 ]
@@ -114,7 +109,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379")],
+            "hosts": [env("REDIS_URL")],
         },
     },
 }
@@ -122,19 +117,27 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if not DEBUG:
-    DATABASES = {"default": dj_database_url.parse(os.getenv("PRODUCTION_DATABASE_URL"))}
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASS"),
-            "HOST": os.getenv("DB_HOST"),
-            "PORT": os.getenv("DB_PORT"),
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("PROD_DB_NAME"),
+        "USER": env("PROD_DB_USER"),
+        "PASSWORD": env("PROD_DB_PASS"),
+        "HOST": env("PROD_DB_HOST"),
+        "PORT": env("PROD_DB_PORT"),
     }
+}
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": env("DB_NAME"),
+#         "USER": env("DB_USER"),
+#         "PASSWORD": env("DB_PASS"),
+#         "HOST": env("DB_HOST"),
+#         "PORT": env("DB_PORT"),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -187,12 +190,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "accounts.User"
 
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env("EMAIL_PORT")
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=12),
@@ -207,12 +210,12 @@ SIMPLE_JWT = {
     "AUTH_COOKIE_SAMESITE": "Lax",  # specifies whether the cookie should be sent in cross site requests
 }
 
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
-STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = env("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = env("STRIPE_PUBLISHABLE_KEY")
 
-SITE_URL = os.getenv("FRONTEND_BASE_URL")
+SITE_URL = env("FRONTEND_BASE_URL")
 
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 CELERY_ACCEPT_CONTENT = {"application/json"}
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
@@ -220,7 +223,7 @@ CELERY_TIMEZONE = "Asia/Kolkata"
 CELERY_RESULT_BACKEND = "django-db"
 CELERY_CACHE_BACKEND = "django-cache"
 
-CELERY_BEAT_SCHEDULER = os.getenv("CELERY_BEAT_SCHEDULER")
+CELERY_BEAT_SCHEDULER = env("CELERY_BEAT_SCHEDULER")
 CELERY_BEAT_SCHEDULE = {
     "send_appointment_reminder_emails": {
         "task": "appointments.tasks.send_appointment_reminder_emails",
@@ -231,3 +234,16 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(minute=0, hour=0),  # Run at midnight every day
     # },
 }
+
+DEFAULT_FILE_STORAGE = env("DEFAULT_FILE_STORAGE")
+
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME")
+AWS_QUERYSTRING_EXPIRE = 600
+
+AWS_S3_CUSTOM_DOMAIN = env("AWS_S3_CUSTOM_DOMAIN")
+
+AWS_CLOUDFRONT_KEY_ID = env.str("AWS_CLOUDFRONT_KEY_ID").strip()
+AWS_CLOUDFRONT_KEY = env.str("AWS_CLOUDFRONT_KEY", multiline=True).encode("ascii").strip()
