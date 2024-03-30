@@ -1,9 +1,3 @@
-databases:
-  - name: brohealth-db
-    plan: free
-    databaseName: brohealth_db
-    user: brohealth_admin
-
 services:
   - name: brohealth-backend
     env: python 
@@ -14,13 +8,6 @@ services:
       python manage.py collectstatic --no-input
       python manage.py migrate
     startCommand: |
-      daphne -b 0.0.0.0 -p ${PORT} brohealth.asgi:application & celery -A brohealth worker --loglevel=info & celery -A brohealth beat --scheduler django --loglevel=info
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: brohealth-db
-          property: connectionString
-      - key: SECRET_KEY
-        generateValue: true
-      - key: WEB_CONCURRENCY
-        value: "1"
+      daphne -b 0.0.0.0 -p ${PORT} brohealth.asgi:application
+      celery -A brohealth worker --loglevel=info
+      celery -A brohealth beat --scheduler django --loglevel=info
