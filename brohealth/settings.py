@@ -20,7 +20,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = ["main.d2jqgsuur54ac8.amplifyapp.com", "brohealth-backend.onrender.com", "127.0.0.1"]
+ALLOWED_HOSTS = ["main.d2jqgsuur54ac8.amplifyapp.com", "brohealth-backend.onrender.com", "127.0.0.1", "localhost"]
 
 
 # Application definition
