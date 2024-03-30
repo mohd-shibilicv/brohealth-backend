@@ -63,6 +63,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
     "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://localhost:8000",
     "https://main.d2jqgsuur54ac8.amplifyapp.com",
     "http://main.d2jqgsuur54ac8.amplifyapp.com",
     "https://brohealth-backend.onrender.com",
@@ -78,6 +80,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://main.d2jqgsuur54ac8.amplifyapp.com",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:8000",
+    "http://localhost:5173",
+    "http://localhost:8000",
 ]
 
 MIDDLEWARE = [
