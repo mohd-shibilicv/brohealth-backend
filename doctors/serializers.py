@@ -1,3 +1,4 @@
+import mimetypes
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import MinLengthValidator, RegexValidator
@@ -57,20 +58,31 @@ class DoctorVerificationSerializer(serializers.ModelSerializer):
         while True:
             key = f'certificates[{index}]'
             if key in self.context['request'].FILES:
-                certificates_data.append(self.context['request'].FILES[key])
+                file = self.context['request'].FILES[key]
+                file_type = self.get_file_type(file)
+                certificates_data.append({'file': file, 'type': file_type})
                 index +=  1
             else:
                 break
 
         # Create Certificate instances and add them to the doctor_verification instance
         for certificate_data in certificates_data:
-            certificate = Certificate.objects.create(file=certificate_data)
+            certificate = Certificate.objects.create(**certificate_data)
             doctor_verification.certificates.add(certificate)
 
         # Save the doctor_verification instance to update the ManyToManyField
         doctor_verification.save()
 
         return doctor_verification
+    
+    def get_file_type(self, file):
+        mime_type = mimetypes.guess_type(file.name)[0]
+        if mime_type and mime_type.startswith('image'):
+            return Certificate.FileTypeChoices.IMAGE
+        elif mime_type and mime_type.startswith('application/pdf'):
+            return Certificate.FileTypeChoices.PDF
+        else:
+            return Certificate.FileTypeChoices.IMAGE
 
 
 class DoctorAvailabilitySerializer(serializers.ModelSerializer):

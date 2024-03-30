@@ -22,7 +22,16 @@ class Doctor(models.Model):
 
 
 class Certificate(models.Model):
+    class FileTypeChoices:
+        IMAGE = 'image', 'image'
+        PDF = 'pdf', 'pdf'
+
     file = models.FileField(upload_to='certificates/')
+    type = models.CharField(
+        max_length=20,
+        choices=FileTypeChoices.choices,
+        default=FileTypeChoices.IMAGE,
+    )
 
     def __str__(self):
         return f'{self.file.name}'
