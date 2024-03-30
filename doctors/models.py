@@ -21,11 +21,12 @@ class Doctor(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
 
 
-class Certificate(models.Model):
-    class FileTypeChoices:
+class FileTypeChoices(models.TextChoices):
         IMAGE = 'image', 'image'
         PDF = 'pdf', 'pdf'
 
+
+class Certificate(models.Model):
     file = models.FileField(upload_to='certificates/')
     type = models.CharField(
         max_length=20,

@@ -1,11 +1,7 @@
 import mimetypes
 from rest_framework import serializers
-from django.contrib.auth.password_validation import validate_password
-from django.core.validators import MinLengthValidator, RegexValidator
-from rest_framework.validators import UniqueValidator
-from django.contrib.auth import authenticate
 
-from doctors.models import Doctor, Certificate, DoctorVerification, DoctorAvailability
+from doctors.models import Doctor, Certificate, DoctorVerification, DoctorAvailability, FileTypeChoices
 from accounts.serializers import UserSerializer
 
 
@@ -78,9 +74,9 @@ class DoctorVerificationSerializer(serializers.ModelSerializer):
     def get_file_type(self, file):
         mime_type = mimetypes.guess_type(file.name)[0]
         if mime_type and mime_type.startswith('image'):
-            return Certificate.FileTypeChoices.IMAGE
+            return FileTypeChoices.IMAGE
         elif mime_type and mime_type.startswith('application/pdf'):
-            return Certificate.FileTypeChoices.PDF
+            return FileTypeChoices.PDF
         else:
             return Certificate.FileTypeChoices.IMAGE
 
