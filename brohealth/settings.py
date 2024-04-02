@@ -125,7 +125,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [env("REDIS_URL", default=env("DEFAULT_REDIS_URL"))],
+            "hosts": [env("DEFAULT_REDIS_URL", default=env("DEFAULT_REDIS_URL"))],
         },
     },
 }
@@ -231,7 +231,7 @@ STRIPE_PUBLISHABLE_KEY = env("STRIPE_PUBLISHABLE_KEY")
 
 SITE_URL = env("FRONTEND_BASE_URL")
 
-CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+CELERY_BROKER_URL = env("DEFAULT_REDIS_URL")
 CELERY_ACCEPT_CONTENT = {"application/json"}
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
